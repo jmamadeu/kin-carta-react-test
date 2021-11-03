@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { userActions } from '../actions/user.actions';
+import { history, store } from '../helpers';
 
-export class LoginPage extends Component {
+class LoginPage extends Component {
   constructor(props) {
     super(props);
 
@@ -9,11 +12,24 @@ export class LoginPage extends Component {
       username: '',
       password: '',
       submitted: false,
-      error: null,
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  redirect() {
+    if (this.props.userStatus.loggedIn) {
+      history.push('/');
+    }
+  }
+
+  componentDidMount() {
+    this.redirect();
+  }
+
+  componentDidUpdate() {
+    this.redirect();
   }
 
   handleChange(key, value) {
@@ -29,21 +45,13 @@ export class LoginPage extends Component {
       submitted: true,
     });
 
-    const body = JSON.stringify({
-      username: this.state.username,
-      password: this.state.password,
-    });
-
-    fetch('localhost:8000/users/authenticate', {
-      method: 'POST',
-      body,
-    })
-      .then((err) => console.log(err))
-      .catch((err) => {
-        this.setState({
-          error: err,
-        });
-      });
+    try {
+      store.dispatch(
+        userActions.login(this.state.username, this.state.password)
+      );
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   render() {
@@ -51,9 +59,9 @@ export class LoginPage extends Component {
 
     return (
       <div className='col-md-6 col-md-offset-3'>
-        {this.state.error && (
+        {this.props.userStatus.error && (
           <div className='alert alert-danger' key={'12'}>
-            {this.state.error}
+            {this.props.userStatus.error}
           </div>
         )}
 
@@ -106,6 +114,8 @@ export class LoginPage extends Component {
   }
 }
 
-function mapStateToProps(state) {}
+const loginPageWithRedux = connect((state) => ({
+  userStatus: state.authentication,
+}))(LoginPage);
 
-export { LoginPage as TestLoginPage };
+export { LoginPage as TestLoginPage, loginPageWithRedux as LoginPage };

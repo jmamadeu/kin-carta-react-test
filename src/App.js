@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Router, Switch } from 'react-router-dom';
+import { HomePage } from './components/HomePage';
 import { LoginPage } from './components/LoginPage';
 import { RegisterPage } from './components/RegisterPage';
 import { history } from './helpers';
@@ -13,7 +14,7 @@ export function App() {
           <Switch>
             <Route path='/login' component={LoginPage} />
             <Route path='/register' component={RegisterPage} />
-            <PrivateRoute path='/' exact={true} component={LoginPage} />
+            <PrivateRoute path='/' exact={true} component={HomePage} />
           </Switch>
         </Router>
       </div>

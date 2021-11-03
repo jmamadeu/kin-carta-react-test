@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { userActions } from '../actions/user.actions';
+import { store } from '../helpers';
 
-export class RegisterPage extends Component {
+class RegisterPage extends Component {
   constructor(props) {
     super(props);
 
@@ -34,16 +37,11 @@ export class RegisterPage extends Component {
       submitted: true,
     });
 
-    const body = JSON.stringify({
-      ...this.state.user,
-    });
-
-    fetch('localhost:8000/users/register', {
-      method: 'POST',
-      body,
-    })
-      .then((err) => console.log(err))
-      .catch((err) => console.log(err));
+    try {
+      store.dispatch(userActions.register({ ...this.state.user }));
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   render() {
@@ -95,6 +93,13 @@ export class RegisterPage extends Component {
 }
 
 // complete the below function
-function mapStateToProps(state) {}
+function mapStateToProps(state) {
+  return { userRegistration: state.registration };
+}
 
-export { RegisterPage as TestRegisterPage };
+const registrationPageRedux = connect(mapStateToProps)(RegisterPage);
+
+export {
+  RegisterPage as TestRegisterPage,
+  registrationPageRedux as RegisterPage,
+};
