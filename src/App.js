@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Router, Switch } from 'react-router-dom';
+import { Redirect, Route, Router, Switch } from 'react-router-dom';
 import { HomePage } from './components/HomePage';
 import { LoginPage } from './components/LoginPage';
 import { RegisterPage } from './components/RegisterPage';
@@ -12,7 +12,16 @@ export function App() {
       <div className='col-sm-8 col-sm-offset-2'>
         <Router history={history}>
           <Switch>
-            <Route path='/login' component={LoginPage} />
+            <Route
+              render={() =>
+                localStorage.getItem('user') ? (
+                  <Redirect to='/' />
+                ) : (
+                  <LoginPage />
+                )
+              }
+              path='/login'
+            />
             <Route path='/register' component={RegisterPage} />
             <PrivateRoute path='/' exact={true} component={HomePage} />
           </Switch>

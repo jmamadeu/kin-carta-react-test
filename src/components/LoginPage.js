@@ -24,31 +24,27 @@ class LoginPage extends Component {
     }
   }
 
-  componentDidMount() {
-    this.redirect();
-  }
-
-  componentDidUpdate() {
-    this.redirect();
-  }
-
   handleChange(key, value) {
     this.setState({
       [key]: value,
     });
   }
 
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault();
 
     this.setState({
       submitted: true,
     });
 
+    if (!this.state.username || !this.state.password) return;
+
     try {
       store.dispatch(
         userActions.login(this.state.username, this.state.password)
       );
+
+      history.push('/');
     } catch (error) {
       console.log(error);
     }
